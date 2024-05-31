@@ -17,7 +17,7 @@ num_nodes=1
 
 num_utts_per_shard=1000
 data_url=https://www.openslr.org/resources/111
-data_source=/home/work_nfs5_ssd/yhliang/data/aishell4
+data_source=/fs/data/users/rong_gong/is2024/aishell4
 # modify this to your AISHELL-4 data path
 
 nj=16
@@ -43,8 +43,8 @@ decode_modes="attention_rescoring"
 if [ ${stage} -le -1 ] && [ ${stop_stage} -ge -1 ]; then
   echo "stage -1: Data Download"
   local/download_and_untar.sh ${data_source} ${data_url} train_L
-  local/download_and_untar.sh ${data_source} ${data_url} train_M
-  local/download_and_untar.sh ${data_source} ${data_url} train_S
+  #local/download_and_untar.sh ${data_source} ${data_url} train_M
+  #local/download_and_untar.sh ${data_source} ${data_url} train_S
   local/download_and_untar.sh ${data_source} ${data_url} test
 fi
 

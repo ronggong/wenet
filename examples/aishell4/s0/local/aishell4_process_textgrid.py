@@ -42,6 +42,7 @@ def main(args):
     all_segments = []
     for line in wav_scp:
         uttid = line.strip().split(" ")[0]
+        uttid = uttid.split('.')[0]
         if uttid not in utt2textgrid:
             print("%s doesn't have transcription" % uttid)
             continue
