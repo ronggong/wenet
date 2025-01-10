@@ -20,6 +20,7 @@ from wenet.transducer.predictor import (ConvPredictor, EmbeddingPredictor,
                                         RNNPredictor)
 from wenet.transducer.transducer import Transducer
 from wenet.transformer.asr_model import ASRModel
+from wenet.transformer.sed_model import SEDModel
 from wenet.transformer.cmvn import GlobalCMVN
 from wenet.transformer.ctc import CTC
 from wenet.transformer.decoder import BiTransformerDecoder, TransformerDecoder
@@ -78,12 +79,16 @@ def init_model(configs):
     if decoder_type == 'transformer':
         decoder = TransformerDecoder(vocab_size, encoder.output_size(),
                                      **configs['decoder_conf'])
+    elif decoder_type is None:
+        decoder = None
     else:
         assert 0.0 < configs['model_conf']['reverse_weight'] < 1.0
         assert configs['decoder_conf']['r_num_blocks'] > 0
         decoder = BiTransformerDecoder(vocab_size, encoder.output_size(),
                                        **configs['decoder_conf'])
-    ctc = CTC(vocab_size, encoder.output_size())
+
+    if decoder is not None:
+        ctc = CTC(vocab_size, encoder.output_size())
 
     # Init joint CTC/Attention or Transducer model
     if 'predictor' in configs:
@@ -132,6 +137,9 @@ def init_model(configs):
                             ctc=ctc,
                             lfmmi_dir=configs['lfmmi_dir'],
                             **configs['model_conf'])
+        elif configs.get('sed', False):
+            model = SEDModel(vocab_size=vocab_size,
+                             encoder=encoder)
         else:
             model = ASRModel(vocab_size=vocab_size,
                              encoder=encoder,
